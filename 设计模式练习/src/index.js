@@ -2,4 +2,5 @@
 // require('./装饰器模式es7')
 // require('./代理模式经纪人')
 // require('./状态模式状态机')
-require('./状态模式手写promise')
+// require('./状态模式手写promise')
+require('./综合练习')

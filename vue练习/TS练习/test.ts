@@ -23,3 +23,4 @@ if (me.name === 'a') {
 function test<T, U>(p1: T, p2: U): [U, T] {
     return [p2, p1]
 }
+let a1 = 1

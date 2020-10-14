@@ -4,7 +4,10 @@
     <!-- <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/> -->
     <div>{{ count }}</div>
     <div>{{ countMul }}</div>
+    <div>{{ title }}</div>
+    <div>X:{{ x }},Y:{{ y }}</div>
     <div @click="addMore" style="cursor: pointer">+</div>
+    <div @click="updateTitle" style="cursor: pointer">updateTitle</div>
   </div>
 </template>
 
@@ -16,41 +19,28 @@ import {
   computed,
   toRefs,
   onMounted,
+  onUnmounted,
   onUpdated,
   onRenderTriggered,
+  watch,
 } from "vue";
+import useMousePos from "../hooks/useMousePos";
 interface ICount {
   count: number;
   countMul: number;
   addMore: () => void;
 }
 export default {
-  mounted() {
-    console.log('1 hello');
-    
-  },
   setup() {
-    // let count = ref(0);
-    // let countMul = computed(() => {
-    //   return count.value * 2;
-    // });
-    // let addMore = () => {
-    //   count.value++;
-    // };
-    // return {
-    //   count,
-    //   countMul,
-    //   addMore,
-    // };
-    onMounted(()=>{
-      console.log('2hello');
-    })
-    onUpdated(()=>{
-      console.log('updated....');
-    })
-    onRenderTriggered((e)=>{
+    onMounted(() => {
+      console.log("2hello");
+    });
+    onUpdated(() => {
+      console.log("updated....");
+    });
+    onRenderTriggered((e) => {
       console.log(e);
-    })
+    });
     let data: ICount = reactive({
       count: 0,
       countMul: computed(() => data.count * 10),
@@ -58,8 +48,21 @@ export default {
         data.count++;
       },
     });
+    const title = ref("");
+    const updateTitle = () => {
+      title.value += "Hello";
+    };
+    watch([title, () => data.count], (nv, ov) => {
+      console.log("old", ov);
+      console.log("new", nv);
+      document.title = "update" + title.value + data.count;
+    });
+
     return {
+      title,
+      updateTitle,
       ...toRefs(data),
+      ...useMousePos(),
     };
   },
 };

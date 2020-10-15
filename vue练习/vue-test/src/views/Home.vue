@@ -5,6 +5,8 @@
     <div>{{ count }}</div>
     <div>{{ countMul }}</div>
     <div>{{ title }}</div>
+    <h1 v-if="loading">loading...</h1>
+    <img :src="result[0].url" v-if="loaded" alt="" />
     <div>X:{{ x }},Y:{{ y }}</div>
     <div @click="addMore" style="cursor: pointer">+</div>
     <div @click="updateTitle" style="cursor: pointer">updateTitle</div>
@@ -25,6 +27,17 @@ import {
   watch,
 } from "vue";
 import useMousePos from "../hooks/useMousePos";
+import useURLLoad from "../hooks/useURLLoad";
+interface IDog {
+  message: string;
+  status: string;
+}
+interface ICat {
+  id: string;
+  url: string;
+  width: number;
+  height: number;
+}
 interface ICount {
   count: number;
   countMul: number;
@@ -40,6 +53,17 @@ export default {
     });
     onRenderTriggered((e) => {
       console.log(e);
+    });
+    // const { result, loading, loaded } = useURLLoad<IDog>(
+    //   "https://dog.ceo/api/breeds/image/random"
+    // );
+    const { result, loading, loaded } = useURLLoad<ICat[]>(
+      "https://api.thecatapi.com/v1/images/search"
+    );
+    watch(result, () => {
+      if (result.value) {
+        console.log(result.value[0].url);
+      }
     });
     let data: ICount = reactive({
       count: 0,
@@ -63,6 +87,9 @@ export default {
       updateTitle,
       ...toRefs(data),
       ...useMousePos(),
+      result,
+      loading,
+      loaded,
     };
   },
 };
